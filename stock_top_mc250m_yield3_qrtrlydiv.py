@@ -41,7 +41,7 @@ response = requests.get(url, params=payload)
 # Parse response using cjson
 json_response = cjson.decode(response.text)
 
-# Create dictionary of stocks - [cid, symbol, name]
+# Create list of stocks - [cid, symbol, name]
 symbols = []
 for company in json_response['searchresults']:
     # Dynamically load named values into a dictionary
