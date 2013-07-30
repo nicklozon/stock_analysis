@@ -94,7 +94,6 @@ for symbol in symbols:
         cur.execute("INSERT INTO historical_data (symbol, date, price_open, price_high, price_low, price_close, volume) VALUES (%s, %s, %s, %s, %s, %s, %s)",
                      (symbol['symbol'], dt, price_open, price_high, price_low, price_close, volume))
 
-    print symbol['symbol']
     # Commit after each symbol
     conn.commit()
 
