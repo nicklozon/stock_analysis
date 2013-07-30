@@ -62,6 +62,10 @@ for company in json_response['searchresults']:
 url = 'https://www.google.com/finance/historical'
 payload = {'startdate': 'Jan 1, 2010', 'enddate': 'Dec 31, 2013', 'num': 200}
 
+# Connect to database
+conn = psycopg2.connect("dbname=stock_analysis user=nick")
+cur = conn.cursor()
+
 # Download historical data for each stock
 for symbol in symbols:
     # set the company id and reset start field
@@ -75,34 +79,25 @@ for symbol in symbols:
     bad_chars = '\n,'
     rgx = re.compile('[%s]' % bad_chars)
 
-    # Connect to database
-    conn = psycopg2.connect("dbname=stock_analysis user=nick")
-    cur = conn.cursor()
-
     # Loop each row and pull the data out
     for row in rows:
-        # Scrub data
+        # Scrub data - strip, remove new lines and commas, replace dashes w/ 0
         dt = datetime.strptime(row.contents[1].string.strip(), '%b %d, %Y').date()
-        price_open = rgx.sub('', row.contents[2].string.strip())
-        price_high = rgx.sub('', row.contents[3].string.strip())
-        price_low = rgx.sub('', row.contents[4].string.strip())
+        price_open = rgx.sub('', row.contents[2].string.strip()).replace('-', '0.0')
+        price_high = rgx.sub('', row.contents[3].string.strip()).replace('-', '0.0')
+        price_low = rgx.sub('', row.contents[4].string.strip()).replace('-', '0.0')
         price_close = rgx.sub('', row.contents[5].string.strip())
         volume = rgx.sub('', row.contents[6].string.strip())
-
-        # Correct missing data - the price_close amount is still available
-        if price_open == '-':
-            price_open = 0.0
-        if price_high == '-':
-            price_high = 0.0
-        if price_low == '-':
-            price_low = 0.0
 
         # Insert record
         # TODO: Is there such a thing as a precompiled query? Or is this it?
         cur.execute("INSERT INTO historical_data (symbol, date, price_open, price_high, price_low, price_close, volume) VALUES (%s, %s, %s, %s, %s, %s, %s)",
                      (symbol['symbol'], dt, price_open, price_high, price_low, price_close, volume))
 
-    # Commit, close cursor, close connection
+    print symbol['symbol']
+    # Commit after each symbol
     conn.commit()
-    cur.close()
-    conn.close()
+
+# Close cursor and connection
+cur.close()
+conn.close()
