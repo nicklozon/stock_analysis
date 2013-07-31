@@ -10,23 +10,22 @@ from bs4 import BeautifulSoup
 # make multiple calls until all data is pulled
 def scrape_historical_data():
     rows = []
-    while True:
+    while len(rows) % 200 == 0:
         response = requests.get(url, params=payload)
 
         # Extract the historical table
         soup = BeautifulSoup(response.text)
         table = soup.find('table', class_=re.compile('historical_price'))
+        if not table:
+            break
 
         # Check if the table exists, then build a list of rows
-        if table is not None:
-            temp = table.find_all('tr')
-            temp.pop(0)  # Remove header
-            rows.extend(temp)  # Append
+        temp = table.find_all('tr')
+        temp.pop(0)  # Remove header
+        rows.extend(temp)  # Append
 
         # Prepare for next page, exit loop if number of rows is less than start
         payload['start'] += 200
-        if len(rows) < payload['start']:
-            break
 
     # Return the rows
     return rows
