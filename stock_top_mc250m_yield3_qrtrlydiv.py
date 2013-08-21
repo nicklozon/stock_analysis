@@ -1,4 +1,9 @@
 #!/opt/virtualenvs/stock_analysis/bin/python
+# Description: Collects historical daily stock information on TSX symbols from
+#   2010 forward. Stocks are screened using Google's stock screener based on
+#   criteria including dividend yield, market capital
+#   http captures using requests, json parsing with cjson, postgres database,
+#   BeautifulSoup for parsing pages.
 import requests
 import cjson
 import re
