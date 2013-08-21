@@ -1,6 +1,6 @@
 # Nick's stock analysis scripts
 
-The beginning of stock analysis scripts. The initial goal, as found in the the current code base, is to provide a an initial series of data to prove a theory of mine - buying a stock during an oversold period (Williams R%) 5 to 10 days prior to an ex-dividend date, then selling at close on the day prior to the ex-dividend date, will typically result in a profit.
+The beginning of my extensive stock analysis scripts. The initial goal, as found in the the current code base, is to provide a an initial series of data to prove a theory of mine - buying a stock during an oversold period (Williams R%) 5 to 10 days prior to an ex-dividend date, then selling at close on the day prior to the ex-dividend date, will typically result in a profit.
 
 Data was selected in two ways: First large market capital stocks on the TSX with a yield >= of 3%, and paying quarterly dividends were slected. Secondly, resource companies were manually removed due to their volatility.
 
