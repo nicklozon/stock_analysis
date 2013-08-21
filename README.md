@@ -10,4 +10,4 @@ Next Steps
 ==========
 The current code base was not intended to be maintained or extended upon, thus not properly developed form a software point of view.
 
-The next development will include the use of SQLAlchemy (python) ORM to build a constantly running program which will pull 15m delayed data from Yahoo Finance on stocks that are 10 to 5 days away from their ex-dividend date, and compare the pricing trends with the past 14 days to determine if the stocks are beign oversold. If both these criterion are met, the stock information will be posted to a web interface.
+The next development will include the use of SQLAlchemy (python) ORM to build a constantly running program which will pull 15m delayed data from Yahoo Finance on stocks that are 10 to 5 days away from their ex-dividend date, and compare the pricing trends with the past 14 days to determine if the stocks are being oversold. If both these criterion are met, the stock information will be posted to a web interface.
