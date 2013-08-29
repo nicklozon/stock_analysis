@@ -94,7 +94,7 @@ class GoogleScreener:
         query = ''
         payload = {'output': 'json',
                    'start': 0,
-                   'num': 250,
+                   'num': 200,
                    'noIL': 1,
                    'restype': self.result_type,
                    'sortas': self.sort_by,
