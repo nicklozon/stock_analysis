@@ -1,6 +1,11 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, \
     Date, DateTime
 from sqlalchemy.ext.declarative import declarative_base
+import requests
+import re
+import psycopg2
+import cjson
+from bs4 import BeautifulSoup
 
 
 engine = create_engine('postgresql+psycopg2://localhost/stock_analysis')
@@ -48,13 +53,14 @@ class StockPriceMinute(Base):
 #              Functonality only implemented as see fit - too many fields to
 #              implement all at once.
 class GoogleScreener:
+    url = 'https://www.google.com/finance'
     market_capital_min = '0'
     market_capital_max = '1T'
     exchange = 'TSE'
     dividend_yield = '3'
     dividend_quarterly_only = True
     last_price = 0
-    restype = 'company'
+    result_type = 'company'
     sort_by = 'MarketCap'
 
     def __init__(self):
@@ -81,3 +87,17 @@ class GoogleScreener:
 
     def set_sort_by(self, sort_by):
         self.sort_by = sort_by
+
+    # Class methods
+    def run(self):
+        # build query
+        query = ''
+        payload = {'output': 'json',
+                   'start': 0,
+                   'num': 250,
+                   'noIL': 1,
+                   'restype': self.result_type,
+                   'sortas': self.sort_by,
+                   'q': query}
+        response = requests.get(self.url, params=payload)
+        json_response = cjson.decode(response.text)
