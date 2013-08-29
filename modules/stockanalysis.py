@@ -62,6 +62,8 @@ class GoogleScreener:
     last_price = 0
     result_type = 'company'
     sort_by = 'MarketCap'
+    result_limit = 200
+    offset = 0
 
     def __init__(self):
         print('Google Screener initialized...')
@@ -88,13 +90,19 @@ class GoogleScreener:
     def set_sort_by(self, sort_by):
         self.sort_by = sort_by
 
+    def set_result_limit(self, limit):
+        self.result_limit = limit
+
+    def set_offset(self, offset):
+        self.offset = offset
+
     # Class methods
     def run(self):
-        # build query
+        # build and execute query
         query = ''
         payload = {'output': 'json',
-                   'start': 0,
-                   'num': 200,
+                   'start': self.offset,
+                   'num': self.result_limit,
                    'noIL': 1,
                    'restype': self.result_type,
                    'sortas': self.sort_by,
