@@ -112,14 +112,13 @@ class GoogleScreener:
 
     def run(self):
         # build and execute query
-        query = self.build_query()
         payload = {'output': 'json',
                    'start': self.offset,
                    'num': self.result_limit,
                    'noIL': 1,
                    'restype': self.result_type,
                    'sortas': self.sort_by,
-                   'q': query}
+                   'q': self.build_query()}
         response = requests.get(self.url, params=payload)
         json_response = cjson.decode(response.text)
 
