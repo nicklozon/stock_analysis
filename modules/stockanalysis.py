@@ -2,10 +2,7 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, \
     Date, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 import requests
-import re
-import psycopg2
 import cjson
-from bs4 import BeautifulSoup
 
 
 engine = create_engine('postgresql+psycopg2://localhost/stock_analysis')
@@ -91,9 +88,12 @@ class GoogleScreener:
         self.offset = offset
 
     # Class methods
+    def build_query(self):
+        return ''
+
     def run(self):
         # build and execute query
-        query = ''
+        query = self.build_query()
         payload = {'output': 'json',
                    'start': self.offset,
                    'num': self.result_limit,
