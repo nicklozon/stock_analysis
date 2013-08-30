@@ -58,7 +58,6 @@ class GoogleScreener:
     market_capital_max = '1T'
     exchange = 'TSE'
     dividend_yield = '3'
-    dividend_quarterly_only = True
     last_price = 0
     result_type = 'company'
     sort_by = 'MarketCap'
@@ -72,17 +71,12 @@ class GoogleScreener:
     def set_market_capital(self, min, max):
         self.market_capital_min = min
         self.market_capital_max = max
-        print('Market capital min/max: %s/%s' % self.market_capital_min,
-              self.market_capital_max)
 
     def set_exchange(self, exchange):
         self.exchange = exchange
 
     def set_dividend_yield(self, dividend_yield):
         self.dividend_yield = dividend_yield
-
-    def set_dividend_quarterly_only(self, flag):
-        self.dividend_quarterly_only = flag
 
     def set_last_price(self, last_price):
         self.last_price = last_price
@@ -109,3 +103,5 @@ class GoogleScreener:
                    'q': query}
         response = requests.get(self.url, params=payload)
         json_response = cjson.decode(response.text)
+
+        return json_response['searchresults']
