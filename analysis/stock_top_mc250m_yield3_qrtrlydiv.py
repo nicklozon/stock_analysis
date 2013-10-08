@@ -10,6 +10,7 @@ import re
 import psycopg2
 from datetime import datetime
 from bs4 import BeautifulSoup
+import pdb
 
 
 # make multiple calls until all data is pulled
@@ -44,6 +45,8 @@ response = requests.get(url, params=payload)
 
 # Parse response using cjson
 json_response = cjson.decode(response.text)
+
+pdb.set_trace()
 
 # Create list of stocks - [cid, symbol, name]
 symbols = []

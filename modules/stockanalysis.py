@@ -52,7 +52,7 @@ class StockPriceMinute(Base):
 class GoogleScreener:
     url = 'https://www.google.com/finance'
     market_capital_min = '0'
-    market_capital_max = '1T'
+    market_capital_max = '1000000000'
     exchange = 'TSE'
     dividend_yield_min = 3
     dividend_yield_max = 0
@@ -65,31 +65,6 @@ class GoogleScreener:
 
     def __init__(self):
         print('Google Screener initialized...')
-
-    # Setters
-    def set_market_capital(self, min, max):
-        self.market_capital_min = str(min)
-        self.market_capital_max = str(max)
-
-    def set_exchange(self, exchange):
-        self.exchange = exchange
-
-    def set_dividend_yield_range(self, min, max):
-        self.dividend_yield_min = min
-        self.dividend_yield_min = max
-
-    def set_last_price_range(self, min, max):
-        self.last_price_min = min
-        self.last_price_max = max
-
-    def set_sort_by(self, sort_by):
-        self.sort_by = sort_by
-
-    def set_result_limit(self, limit):
-        self.result_limit = limit
-
-    def set_offset(self, offset):
-        self.offset = offset
 
     # Class methods
     def build_query(self):
@@ -108,6 +83,7 @@ class GoogleScreener:
         # Again, may seem redundant, but this forces the recent dividend to
         # return in the result. Should be made dynamic in future.
         result += '(dividend_recent_quarter > 0)'
+        result += ']'
         return result
 
     def run(self):
