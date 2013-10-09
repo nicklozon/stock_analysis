@@ -1,11 +1,12 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, \
-    Date, DateTime
+    Date, DateTime, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 import requests
 import cjson
 
 
-engine = create_engine('postgresql+psycopg2://localhost/stock_analysis')
+engine = create_engine('postgresql+psycopg2://localhost/stock_analysis',
+                       echo=True)
 Base = declarative_base()
 
 
@@ -13,15 +14,18 @@ class Stock(Base):
     __tablename__ = 'symbols'
     symbol = Column(String, primary_key=True)
     name = Column(String)
+    active = Column(Boolean)
 
-    def __init__(self):
-        print('Stock initialized...')
+    def __init__(self, symbol, name, active=True):
+        self.symbol = symbol
+        self.name = name
+        self.active = active | True
 
 
 class StockPriceDaily(Base):
     __tablename__ = 'price_daily'
     id = Column(Integer, primary_key=True)
-    symbol = Column(String, ForeignKey('symbols.symbol'))
+    symbol_id = Column(String, ForeignKey('symbols.symbol'))
     date = Column(Date)
     high = Column(Integer)
     low = Column(Integer)
@@ -35,7 +39,7 @@ class StockPriceDaily(Base):
 class StockPriceMinute(Base):
     __tablename__ = 'price_minute'
     id = Column(Integer, primary_key=True)
-    symbol = Column(String, ForeignKey('symbols.symbol'))
+    symbol_id = Column(String, ForeignKey('symbols.symbol'))
     datetime = Column(DateTime)
     high = Column(Integer)
     low = Column(Integer)
@@ -46,13 +50,17 @@ class StockPriceMinute(Base):
         print('Stock Price Minute initialized...')
 
 
-# Description: Class that retrieves data from the Google Stock Screener.
+# Create the tables
+Base.metadata.create_all(engine)
+
+
+# Description: Class that retricreateves data from the Google Stock Screener.
 #              Functonality only implemented as see fit - too many fields to
 #              implement all at once.
 class GoogleScreener:
     url = 'https://www.google.com/finance'
     market_capital_min = '0'
-    market_capital_max = '1000000000'
+    market_capital_max = '0'
     exchange = 'TSE'
     dividend_yield_min = 3
     dividend_yield_max = 0
@@ -98,4 +106,28 @@ class GoogleScreener:
         response = requests.get(self.url, params=payload)
         json_response = cjson.decode(response.text)
 
-        return json_response['searchresults']
+        # Return object
+        symbols = []
+
+        # Load the list of stocks using the json response
+        for company in json_response['searchresults']:
+            # Dynamically load named values into a dictionary
+            values = {}
+            for column in company['columns']:
+                values[column['field']] = column['value']
+
+            # Cast yield, dividend and price
+            dividend_yield = float(values['DividendYield']) / 100
+            price = float(values['QuoteLast'])
+            dividend = float(values['DividendRecentQuarter'])
+
+            # Append stock to symbols if dividend payouts are nore more than
+            # quarterly
+            if dividend_yield / (dividend / price) < 5:
+                symbols.append({'cid': company['id'],
+                                'symbol': company['ticker'],
+                                'name': company['title']
+                                .decode('unicode-escape')}
+                               )
+
+        return symbols
