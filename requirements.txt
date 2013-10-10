@@ -1,0 +1,11 @@
+SQLAlchemy==0.8.2
+beautifulsoup4==4.2.1
+lxml==3.2.1
+psycopg2==2.5.1
+python-cjson==1.0.5
+requests==1.2.3
+stevedore==0.10
+virtualenv==1.10
+virtualenv-clone==0.2.4
+virtualenvwrapper==4.1.1
+wsgiref==0.1.2
